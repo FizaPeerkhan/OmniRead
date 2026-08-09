@@ -13,6 +13,7 @@ from app.services.readability import calculate_readability
 from app.services.statistics import calculate_statistics
 from app.services.difficult_words import detect_difficult_words
 from app.services.complex_sentences import detect_complex_sentences
+from app.services.simplification import simplify_text
 
 router = APIRouter()
 
@@ -53,3 +54,19 @@ def analyze_text(request: TextRequest):
         "complex_sentences": detect_complex_sentences(text)
 
     }
+
+@router.post("/simplify")
+def simplify_text_endpoint(request: TextRequest):
+
+    text = request.text
+
+    # Get Member 1's difficult-word analysis
+    difficult_words = detect_difficult_words(text)
+
+    # Send Member 1's output to Member 2
+    result = simplify_text(
+        text,
+        difficult_words
+    )
+
+    return result
